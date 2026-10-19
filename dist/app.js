@@ -90,7 +90,7 @@ function captureContact(){const form=document.querySelector('#booking-form');if(
 async function refresh(silent=false){
   if(state.loading||state.submitting||!config.apiUrl)return;
   state.loading=true;if(!silent)render();
-  try{const result=await rpc('availability');serverSkew=Date.parse(result.serverTime)-Date.now();state.slots=result.slots;state.loaded=true;state.refreshTime=Date.now();if(state.step==='time'){state.error='';if(state.slot&&!state.slots.some(s=>s.id===state.slot.id&&s.available)){state.slot=null;state.error='unavailable';}}}
+  try{const result=await rpc('availability');serverSkew=Date.parse(result.serverTime)-Date.now();state.slots=result.slots;state.loaded=true;state.refreshTime=Date.now();if(state.step==='time'){if(state.error!=='unavailable')state.error='';if(state.slot&&!state.slots.some(s=>s.id===state.slot.id&&s.available)){state.slot=null;state.error='unavailable';}}}
   catch(error){/* A request started on the time screen must never tear down a form or pending confirmation. */if(state.step==='time'){state.error=error.message==='not_configured'?'not_configured':'availability_unreachable';state.slot=null;state.loaded=false;}}
   finally{state.loading=false;if(state.step==='time')render();}
 }

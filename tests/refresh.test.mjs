@@ -26,3 +26,9 @@ test('availability timeout on time screen never suggests that a booking was crea
   const p=pendingRefresh();const promise=p.start();p.reject(new Error('uncertain'));await promise;
   assert.equal(p.state.error,'availability_unreachable');assert.equal(p.state.loaded,false);assert.equal(p.state.slot,null);
 });
+
+test('background refresh preserves the occupied-slot explanation until another choice',async()=>{
+  const p=pendingRefresh();p.state.slot=null;p.state.error='unavailable';const promise=p.start();
+  p.resolve({serverTime:new Date().toISOString(),slots:[{id:'first',available:false}]});await promise;
+  assert.equal(p.state.error,'unavailable');
+});
