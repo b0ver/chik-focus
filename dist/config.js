@@ -1,5 +1,5 @@
 window.CHIK_FOCUS = Object.freeze({
-  apiUrl: '',
+  apiUrl: 'https://script.google.com/macros/s/AKfycbzjDKnpn_u1arPzm4Z31QruGp4-E-4fFcJzJGnzEuJEkcEU7DLRUsKpTHh1DxtJFAOC/exec',
   publicUrl: 'https://b0ver.github.io/chik-focus/',
   demoUrl: 'https://b0ver.github.io/chik-miniapp/',
   organizer: 'Евгений Попов',
