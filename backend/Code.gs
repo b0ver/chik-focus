@@ -42,7 +42,8 @@ function doPost(e){
   }catch(error){return HtmlService.createHtmlOutput('Invalid request.');}
   let result;
   try{
-    if(!ready_())throw new Error('closed');
+    if(!PropertiesService.getScriptProperties().getProperty('BOOKING_SHEET_ID'))throw new Error('closed');
+    if(!ready_()&&['availability','book'].indexOf(request.action)>=0)throw new Error('closed');
     result=dispatch_(request);
   }catch(error){
     const allowed=['invalid_request','invalid_name','invalid_contact','invalid_consent','invalid_format','unavailable','already_booked','rate_limited','closed','not_found','expired','busy'];
@@ -99,7 +100,6 @@ function book_(r){
   if(rows.filter(function(b){return normalizedContact_(b.Contact)===contact&&Date.parse(b.Created)>Date.now()-86400000;}).length>=5)throw new Error('rate_limited');
   const instant=new Date().toISOString();
   const booking={ID:Utilities.getUuid(),Slot:slot.id,Name:r.name.trim(),Contact:r.contact.trim(),Role:r.role,Format:r.format,Created:instant,Status:'confirmed',TokenHash:tokenHash,RequestID:r.requestId,Updated:instant,CalendarEventID:'',CalendarSyncState:'not_connected',ConsentVersion:r.consentVersion};
-  // The optional research note is intentionally not stored: avoid collecting unnecessary free-form personal information.
   sheet_().appendRow(COLUMNS.map(function(key){return safeCell_(booking[key]);}));
   SpreadsheetApp.flush();
   return {ok:true,booking:publicBooking_(booking)};
