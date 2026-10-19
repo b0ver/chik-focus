@@ -52,6 +52,7 @@ function rpc(action,data={}){
 }
 const errorText=code=>({
   not_configured:'Самостоятельная запись пока закрыта. Напишите Евгению — он поможет выбрать время.',
+  availability_unreachable:'Не удалось обновить свободное время. Нажмите «Обновить время» или попробуйте позже.',
   unavailable:'Это время только что заняли или оно уже недоступно. Выберите другой слот.',
   already_booked:'У этого контакта уже есть активная запись. Чтобы её изменить, напишите Евгению.',
   rate_limited:'Слишком много попыток. Попробуйте позже или напишите Евгению.',
@@ -89,8 +90,8 @@ function captureContact(){const form=document.querySelector('#booking-form');if(
 async function refresh(silent=false){
   if(state.loading||state.submitting||!config.apiUrl)return;
   state.loading=true;if(!silent)render();
-  try{const result=await rpc('availability');serverSkew=Date.parse(result.serverTime)-Date.now();state.slots=result.slots;state.loaded=true;state.error='';state.refreshTime=Date.now();if(state.slot&&!state.slots.some(s=>s.id===state.slot.id&&s.available)){state.slot=null;if(state.step==='contacts'){captureContact();state.step='time';state.error='unavailable';}}}
-  catch(error){state.error=error.message;/* Do not retain a selectable stale slot after a failed refresh. */state.slot=null;state.loaded=false;if(state.step==='contacts'){captureContact();state.step='time';}}
+  try{const result=await rpc('availability');serverSkew=Date.parse(result.serverTime)-Date.now();state.slots=result.slots;state.loaded=true;state.refreshTime=Date.now();if(state.step==='time'){state.error='';if(state.slot&&!state.slots.some(s=>s.id===state.slot.id&&s.available)){state.slot=null;state.error='unavailable';}}}
+  catch(error){/* A request started on the time screen must never tear down a form or pending confirmation. */if(state.step==='time'){state.error=error.message==='not_configured'?'not_configured':'availability_unreachable';state.slot=null;state.loaded=false;}}
   finally{state.loading=false;if(state.step==='time')render();}
 }
 function manageLink(){return config.publicUrl+'#booking='+state.request.manageToken;}
