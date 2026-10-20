@@ -48,3 +48,7 @@
 Нет платежей, рекламной аналитики и платных зависимостей. Применяются бесплатные квоты Google Apps Script и GitHub Pages; без регистрации платного тарифа. Защита от спама базовая (лимиты по контакту и скрытое поле); для широкой публичной кампании потребуется CAPTCHA/проверка контакта. Данные контакта предоставлены участником и не проверяются на владение.
 
 Источники: [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages), [Apps Script Web Apps](https://developers.google.com/apps-script/guides/web), [LockService](https://developers.google.com/apps-script/reference/lock/lock-service), [квоты Google](https://developers.google.com/apps-script/guides/services/quotas).
+
+## Инженерные проверки и откат
+
+Команды проверки, CI/CD, настройка защиты ветки и восстановление описаны в [OPERATIONS.md](OPERATIONS.md).
